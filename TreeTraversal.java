@@ -62,7 +62,6 @@ public class TreeTraversal {
         n12.right = n13;
         n19.right = n25;
         
-        
         return root;
     }
     public static void main(String[] args){
@@ -77,8 +76,6 @@ public class TreeTraversal {
         
         System.out.println("\n\nPost order Traversal:");
         postOrderTraversal(root);
-        
-        
         
     }
 }
