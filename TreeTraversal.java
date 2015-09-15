@@ -1,5 +1,10 @@
 package TreePractice;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
+
 class Node{
     private int data;
     public Node left;
@@ -13,7 +18,7 @@ class Node{
 }
    
 public class TreeTraversal {
-    
+      
     public static void preOrderTraversal(Node root){
         if(root != null){
             System.out.print(root.getData() + " ");
@@ -35,8 +40,50 @@ public class TreeTraversal {
             System.out.print(root.getData() + " ");            
         }
     }
-    
-    public static Node buildTree(){
+    public static void LevelOrderTraversal(Node root){
+        //simple BFS breadth first search traversal, 
+        //no biggy, just use the Queue properly
+        Queue<Node> treeQueue = new LinkedList<Node>();
+        if(root != null){
+            treeQueue.add(root);
+            Iterator iter = treeQueue.iterator();
+            while(!treeQueue.isEmpty()){
+                Node currentNode = treeQueue.poll();
+                System.out.print(currentNode.getData() + " ");
+                if(currentNode.left != null){
+                    treeQueue.add(currentNode.left);
+                }
+                if(currentNode.right != null){
+                    treeQueue.add(currentNode.right);
+                }
+            }
+        }  
+    }
+    public static void spiralTraversal(Node root){
+        //traverse the nodes in a zig-zag manner
+        //first depth = 0, the root is printed 
+        //then, depth = 1, nodes are printed from left to right
+        //then, depth = 2, nodes are printed from right to left
+        //then, depth = 3, nodes are printed from left to right .. and so on ..
+        Stack<Node> stack1 = new Stack<Node>();
+        Stack<Node> stack2 = new Stack<Node>();
+        stack1.push(root);
+        while(!stack1.isEmpty() || !stack2.isEmpty() ){
+            while(!stack1.isEmpty()){
+                Node temp = stack1.pop();
+                System.out.print(temp.getData() + " ");
+                if(temp.left != null){stack2.push(temp.left);}
+                if(temp.right != null){stack2.push(temp.right);}
+            }
+            while(!stack2.isEmpty()){
+                Node temp = stack2.pop();
+                System.out.print(temp.getData() + " ");
+                if(temp.right != null){stack1.push(temp.right);}
+                if(temp.left != null){stack1.push(temp.left);}
+            }
+        }
+    }
+    private static Node buildTree(){
         Node root = new Node();
         Node n9 = new Node();
         Node n6 = new Node();
@@ -62,8 +109,11 @@ public class TreeTraversal {
         n12.right = n13;
         n19.right = n25;
         
+        
         return root;
     }
+    
+    
     public static void main(String[] args){
         System.out.println("Hello world from Tree Traversal!!!");
         
@@ -75,7 +125,12 @@ public class TreeTraversal {
         inOrderTraversal(root);
         
         System.out.println("\n\nPost order Traversal:");
-        postOrderTraversal(root);
+        postOrderTraversal(root);   
+                
+        System.out.println("\n\nLevel order traversal: ");
+        LevelOrderTraversal(root);
         
+        System.out.println("\n\nSpiral order traversal:");
+        spiralTraversal(root);        
     }
 }
