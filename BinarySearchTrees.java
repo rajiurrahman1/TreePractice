@@ -1,40 +1,14 @@
 package TreePractice;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  *
  * @author Rajiur
  */
+
 public class BinarySearchTrees {
-    public static Node Insert(Node root, int value){
-        Node current = root;
-        while(true){
-            if(value < current.getData()){
-                if(current.left != null){current = current.left;}
-                else{break;}
-            }
-            else{
-                if(current.right != null){current = current.right;}
-                else{break;}
-            }
-        }
-        Node temp = new Node();
-        temp.setData(value);
-        temp.left = null; temp.right = null;
-        if(value < current.getData()){
-            current.left = temp;
-        }
-        else{
-            current.right = temp;
-        }
-        return root;       
-    }
-    public static void deleteNode(Node root, int value){
-        // complex method with recursion
-        // case 1: remove a leaf node, easy as hell
-        // case 2: node has one child. Pretty easy. just return root.left or right from the recursive cal
-        // case 3: node has two children. DIFFICULT
-            //      Find the lowest value from the right subtree and replace that with 'value' dealete that node
-    }
     private static Node buildTree(){
         Node root = new Node();
         Node n4 = new Node();
@@ -67,8 +41,41 @@ public class BinarySearchTrees {
         n21.left = n19;
         n21.right = n25;
         
+//        Node n18 = new Node();
+//        n18.setData(18);
+//        n19.left = n18;
         return root;
-    }   
+    } 
+    public static Node Insert(Node root, int value){
+        Node current = root;
+        while(true){
+            if(value < current.getData()){
+                if(current.left != null){current = current.left;}
+                else{break;}
+            }
+            else{
+                if(current.right != null){current = current.right;}
+                else{break;}
+            }
+        }
+        Node temp = new Node();
+        temp.setData(value);
+        temp.left = null; temp.right = null;
+        if(value < current.getData()){
+            current.left = temp;
+        }
+        else{
+            current.right = temp;
+        }
+        return root;       
+    }
+    public static void deleteNode(Node root, int value){
+        // complex method with recursion
+        // case 1: remove a leaf node, easy as hell
+        // case 2: node has one child. Pretty easy. just return root.left or right from the recursive cal
+        // case 3: node has two children. DIFFICULT
+            //      Find the lowest value from the right subtree and replace that with 'value' dealete that node
+    }  
     public static int levelWidth(Node root, int depth){
         //the depth of tree root is considered 0
         if(root == null){
@@ -83,7 +90,7 @@ public class BinarySearchTrees {
             }
         }
     }
-    public static int height(Node root){
+    public static int height(Node root){ //if it has only one node, root, then height will be 1
         if(root == null){
             return 0;
         }
@@ -207,22 +214,76 @@ public class BinarySearchTrees {
         }
     }
     public static Node deleteLeaves(Node root){
-        
-            if(root.left == null && root.right == null){
-                root = null;
-                return null;
-            }
-            else{
-                if(root.left != null){root.left = deleteLeaves(root.left);}
-                if(root.right != null){root.right = deleteLeaves(root.right);}
-            }
+        if(root.left == null && root.right == null){
+            root = null;
+            return null;
+        }
+        else{
+            if(root.left != null){root.left = deleteLeaves(root.left);}
+            if(root.right != null){root.right = deleteLeaves(root.right);}
+        }
         
         return root;
     }
-//    public static Node deleteLeaves_iterative(Node root){
-//        //should be easy
-//        
-//    }
+    public static void nodeAtKDistance(Node root, int distance){ //assume dist is not more than tree height
+        Queue<Node> treeQueue1 = new LinkedList<Node>();
+        Queue<Node> treeQueue2 = new LinkedList<Node>();
+        if(distance == 1){
+            System.out.println(root.getData());
+        }
+        else{
+            treeQueue1.add(root);
+            for(int i=1; i<distance; i++){
+                if( (i & 1) != 0){ // for i==odd
+                    while(!treeQueue1.isEmpty()){
+                        System.out.println("Hello");
+                        Node current = treeQueue1.poll();
+                        if(current.left != null){treeQueue2.add(current.left);}
+                        if(current.right != null){treeQueue2.add(current.right);}
+                    }
+                }
+                else{ //for i==even
+                    while(!treeQueue2.isEmpty()){
+                        System.out.println("Hi");
+                        Node current = treeQueue2.poll();
+                        if(current.left != null){treeQueue1.add(current.left);}
+                        if(current.right != null){treeQueue1.add(current.right);}
+                    }     
+                }
+            }
+        }
+        if( (distance & 1) == 0 ){  //distance value is even, pop all the values from TreeQueue1
+            while(!treeQueue2.isEmpty()){
+                Node temp = treeQueue2.poll();
+                System.out.print(temp.getData() + " ");
+            }
+        }
+        else{
+            while(!treeQueue1.isEmpty()){
+                Node temp = treeQueue1.poll();
+                System.out.print(temp.getData() + " ");
+            }
+        }
+    }
+    public static int diameter(Node root){
+        if(root == null){
+            return 0;
+        }
+        else{
+            int leftH = height(root.left);
+            int rightH = height(root.right);
+            return leftH+rightH+1;
+        }
+    }
+    public static int sumTreeValues(Node root){
+        if(root == null){
+            return 0;
+        }
+        else{
+            return root.getData()+sumTreeValues(root.left)+sumTreeValues(root.right);
+        }
+    }
+
     
     public static void main(String[] args){
         Node root = buildTree();
@@ -230,16 +291,16 @@ public class BinarySearchTrees {
         System.out.println("Total leaves: "+ countLeaves(root));
         int depth = 1; //root is at depth=0
         System.out.println("Total nodes at deapth "+ depth + " is: " + levelWidth(root, depth) );
-        
         System.out.println( searchElement_recursive(root,26) );
         System.out.println("Sum of leaf nodes: "+sumLeaves(root));
-        System.out.println("Sum of internal nodes: "+sumInternalNodes(root));
-        
+        System.out.println("Sum of internal nodes: "+sumInternalNodes(root));       
 //        printBSTRange_recursive(root, 2, 22);
         System.out.println(isSameTree(root.left, root.left));
 //        Node deletedLeavesRoot = deleteLeaves(root);
 //        System.out.println("Height after deleting leaves: "+ height(deletedLeavesRoot));
         
-        
+        nodeAtKDistance(root, 2);
+        System.out.println("\nDiameter: " + diameter(root));
+        System.out.println("Sum of all the tree node values: " + sumTreeValues(root));
     }
 }
